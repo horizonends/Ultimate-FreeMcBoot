@@ -6,4 +6,6 @@ Canonical repo (chooser ELF + `cheats-ntsc` / `cheats-pal` packages), part of th
 
 https://github.com/horizonends/PS2-Cheat-Chooser
 
+**Private for now** (not a public release of the chooser sources).
+
 The 1966 `INSTALL/APPS/cheats-*` folders in this repo are the copies baked into the FMCB install payload.
