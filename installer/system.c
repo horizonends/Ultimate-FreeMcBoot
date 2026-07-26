@@ -51,6 +51,7 @@ static const char *GetMountParams(const char *command, char *BlockDevice);
 static int DeleteFolder(const char *folder);
 static int DeleteFolderIfEmpty(const char *folder);
 static int AddDirContentsToFileCopyList(const char *RootFolderPath, const char *srcRelativePath, const char *destination, unsigned int CurrentLevel, struct FileCopyTarget **FileCopyList, unsigned int *CurrentNumFiles, unsigned int *CurrentNumDirs, unsigned int *TotalRequiredSpaceForFiles);
+static void PruneOplFromCopyList(struct FileCopyTarget **FileCopyList, unsigned int *CurrentNumFiles, unsigned int *CurrentNumDirs, unsigned int *TotalRequiredSpaceForFiles, unsigned int flags);
 static int GetMcFreeSpace(int port, int slot);
 static int EnableHDDBooting(void);
 static int CopyFilesToHDD(const char *RootFolder, const struct FileCopyTarget *FileCopyList, unsigned int NumFilesEntries, unsigned int TotalNumBytes, unsigned int flags);
@@ -859,6 +860,70 @@ static int AddDirContentsToFileCopyList(const char *RootFolderPath, const char *
     return result;
 }
 
+/* Drop the OPL build(s) the user did not choose (standard / double / both). */
+static int ShouldSkipOplPath(const char *path, unsigned int flags)
+{
+    if (!(flags & (INSTALL_MODE_FLAG_OPL_STD_ONLY | INSTALL_MODE_FLAG_OPL_DBL_ONLY)))
+        return 0;
+
+    if (flags & INSTALL_MODE_FLAG_OPL_STD_ONLY) {
+        /* Keep standard OPL paths; drop Double OPL ELF and its HDD folder. */
+        if (strstr(path, "OPL-STD") != NULL)
+            return 0;
+        if (strstr(path, "WOPNPS2LD") != NULL)
+            return 1;
+        if (strstr(path, "APPS-HDD/OPL") != NULL)
+            return 1;
+        if (strstr(path, ":pfs:/OPL") != NULL)
+            return 1;
+        return 0;
+    }
+
+    /* Double OPL only: drop standard OPL ELF and OPL-STD folder. */
+    if (strstr(path, "OPL-STD") != NULL)
+        return 1;
+    if (strstr(path, "OPNPS2LD") != NULL)
+        return 1;
+    return 0;
+}
+
+static void PruneOplFromCopyList(struct FileCopyTarget **FileCopyList, unsigned int *CurrentNumFiles, unsigned int *CurrentNumDirs, unsigned int *TotalRequiredSpaceForFiles, unsigned int flags)
+{
+    unsigned int i, write, total;
+    struct FileCopyTarget *list;
+
+    if (!(flags & (INSTALL_MODE_FLAG_OPL_STD_ONLY | INSTALL_MODE_FLAG_OPL_DBL_ONLY)))
+        return;
+
+    list = *FileCopyList;
+    total = *CurrentNumFiles + *CurrentNumDirs;
+    write = 0;
+
+    for (i = 0; i < total; i++) {
+        const char *check = list[i].source != NULL ? list[i].source : list[i].target;
+
+        if (check != NULL && ShouldSkipOplPath(check, flags)) {
+            if (!FIO_S_ISDIR(list[i].mode) && list[i].size > 0 && *TotalRequiredSpaceForFiles >= list[i].size)
+                *TotalRequiredSpaceForFiles -= list[i].size;
+            if (FIO_S_ISDIR(list[i].mode)) {
+                if (*CurrentNumDirs > 0)
+                    (*CurrentNumDirs)--;
+            } else {
+                if (*CurrentNumFiles > 0)
+                    (*CurrentNumFiles)--;
+            }
+            if (list[i].source != NULL)
+                free(list[i].source);
+            if (list[i].target != NULL)
+                free(list[i].target);
+            continue;
+        }
+        if (write != i)
+            list[write] = list[i];
+        write++;
+    }
+}
+
 static int GetMcFreeSpace(int port, int slot)
 {
     int result;
@@ -1293,6 +1358,7 @@ int PerformHDDInstallation(unsigned int flags)
             if ((result = AddDirContentsToFileCopyList(RootFolder, "APPS-HDD", "hdd0:PP.FHDB.APPS:pfs:", 1, &FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles)) < 0) {
                 DEBUG_PRINTF("AddDirContentsToFileCopyList (APPS-HDD) failed: %d\n", result);
             } else {
+                PruneOplFromCopyList(&FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles, flags);
                 // Check if there is anything to copy (copy, only if the APPS-HDD folder exists).
                 if (CurrNumFiles < NumFiles || CurrNumFolders < NumDirectories) {
                     // Calculate available and required space for the APPS partition.
@@ -1677,6 +1743,8 @@ int PerformInstallation(unsigned char port, unsigned char slot, unsigned int fla
         if (result >= 0) {
             if ((result = AddDirContentsToFileCopyList(RootFolder, "APPS", "APPS", 1, &FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles)) < 0) {
                 DEBUG_PRINTF("AddDirContentsToFileCopyList (APPS) failed: %d\n", result);
+            } else {
+                PruneOplFromCopyList(&FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles, flags);
             }
         }
 

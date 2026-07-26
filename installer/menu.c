@@ -515,6 +515,15 @@ void MainMenu(void)
                     }
                 }
 
+                /* Standard OPL, Double OPL, or both. */
+                result = ShowMessageBox(SYS_UI_LBL_OPL_STD, SYS_UI_LBL_OPL_DBL, SYS_UI_LBL_OPL_BOTH, -1, GetUIString(SYS_UI_MSG_OPL_CHOICE), SYS_UI_LBL_CONFIRM);
+                if (result == 0)
+                    break;
+                if (result == 1)
+                    flags |= INSTALL_MODE_FLAG_OPL_STD_ONLY;
+                else if (result == 2)
+                    flags |= INSTALL_MODE_FLAG_OPL_DBL_ONLY;
+
                 if (CheckPrerequisites(&McData[McPort], event) < 0)
                     break;
 
@@ -702,6 +711,15 @@ void MainMenu(void)
                 if (DisplayPromptMessage(SYS_UI_MSG_INST_CFM_HDD, SYS_UI_LBL_NO, SYS_UI_LBL_YES) <= 1)
                     break;
                 flags = 0;
+
+                /* Standard OPL, Double OPL, or both. */
+                result = ShowMessageBox(SYS_UI_LBL_OPL_STD, SYS_UI_LBL_OPL_DBL, SYS_UI_LBL_OPL_BOTH, -1, GetUIString(SYS_UI_MSG_OPL_CHOICE), SYS_UI_LBL_CONFIRM);
+                if (result == 0)
+                    break;
+                if (result == 1)
+                    flags |= INSTALL_MODE_FLAG_OPL_STD_ONLY;
+                else if (result == 2)
+                    flags |= INSTALL_MODE_FLAG_OPL_DBL_ONLY;
 
                 if (HasOldFMCBConfigFileOnHDD()) {
                     result = DisplayPromptMessage(SYS_UI_MSG_CNF_HDD_FOUND, SYS_UI_LBL_YES, SYS_UI_LBL_NO);

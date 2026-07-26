@@ -70,7 +70,8 @@ static const char *DefaultLanguageStringTable[SYS_UI_MSG_COUNT] = {
     "Format HDD and create basic partitions",
     "The installer has detected that your console is a very rare unit\nIf you want to colaborate with the homebrew PS2 comunity please contact me: \n\nhttps://github.com/israpps",
     "Select the target memory card slot.",
-    "Format the memory card before installing?\n\nWarning: all data on the card will be erased."};
+    "Format the memory card before installing?\n\nWarning: all data on the card will be erased.",
+    "Which Open PS2 Loader should be installed?"};
 
 static const char *DefaultLanguageLabelStringTable[SYS_UI_LBL_COUNT] = {
     "OK",
@@ -125,4 +126,7 @@ static const char *DefaultLanguageLabelStringTable[SYS_UI_LBL_COUNT] = {
     "Extras Menu",
     "Memory Card Menu",
     "Format HDD",
+    "Standard OPL",
+    "Double OPL",
+    "Both",
 };

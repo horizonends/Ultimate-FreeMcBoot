@@ -1,98 +1,90 @@
-# FreeMcBoot-Installer
+# Ultimate FreeMcBoot (ashorizonends)
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3a7e81446817406a94eeb77bcc3762dd)](https://app.codacy.com/gh/israpps/FreeMcBoot-Installer?utm_source=github.com&utm_medium=referral&utm_content=israpps/FreeMcBoot-Installer&utm_campaign=Badge_Grade_Settings)
-[![Build [All]](https://github.com/israpps/FreeMcBoot-Installer/actions/workflows/compile-core.yml/badge.svg)](https://github.com/israpps/FreeMcBoot-Installer/actions/workflows/compile-core.yml)
+Fork of [israpps/FreeMcBoot-Installer](https://github.com/israpps/FreeMcBoot-Installer), which itself builds on the original FreeMcBoot / FreeHdBoot installer by **sp193** / Ysai.
 
-[![GitHub release (latest by SemVer and asset including pre-releases)](https://img.shields.io/github/downloads-pre/israpps/FreeMcBoot-Installer/latest/FMCB-1966.7z?color=black&label=&logo=GitHub)](https://github.com/israpps/FreeMcBoot-Installer/releases/tag/latest)
-[![GitHub release (latest by SemVer and asset including pre-releases)](https://img.shields.io/github/downloads-pre/israpps/FreeMcBoot-Installer/latest/FMCB-1965.7z?color=black&label=&logo=GitHub)](https://github.com/israpps/FreeMcBoot-Installer/releases/tag/latest)
-[![GitHub release (latest by SemVer and asset including pre-releases)](https://img.shields.io/github/downloads-pre/israpps/FreeMcBoot-Installer/latest/FMCB-1964.7z?color=black&label=&logo=GitHub)](https://github.com/israpps/FreeMcBoot-Installer/releases/tag/latest)
-[![GitHub release (latest by SemVer and asset including pre-releases)](https://img.shields.io/github/downloads-pre/israpps/FreeMcBoot-Installer/latest/FMCB-1963.7z?color=black&label=&logo=GitHub)](https://github.com/israpps/FreeMcBoot-Installer/releases/tag/latest)
-[![GitHub release (latest by SemVer and asset including pre-releases)](https://img.shields.io/github/downloads-pre/israpps/FreeMcBoot-Installer/latest/FMCB-1953.7z?color=black&label=&logo=GitHub)](https://github.com/israpps/FreeMcBoot-Installer/releases/tag/latest)
+This tree is the **ashorizonends.com** / Ultimate FreeMcBoot package: branded installer, updated apps, and a few install-flow tweaks aimed at real USB → memory card installs.
 
-[![GitHub release (by tag)](https://img.shields.io/github/downloads/israpps/FreeMcBoot-Installer/APPS/total?color=000000&label=Apps%20Pack)](https://github.com/israpps/FreeMcBoot-Installer/releases/tag/APPS)
+Site: [ashorizonends.com](https://ashorizonends.com)
 
- Custom installers for FreeMcBoot 1.966, 1.965, 1.953, 1.964 and 1.963
+---
 
-They're packed with updated software.
+## Credits (upstream)
 
-In addition, several enhancements were made:
-+ Installer:
-  - Forbid multi install (corrupts memory card filesystem and doesn't achieve anything different than normal install)
-  - Renamed normal install options to be user friendly
-  - added manual HDD format option
-  - added variant of installer that can be launched from exfat USB
-+ Installation package:
-  - updated Kernel patch updates for SCPH-10000 & SCPH-15000 to the one used on FreeMcBoot 1.966
-  - Updated FreeHdBoot FSCK and MBR bootstraps to the one used on FreeHdBoot 1.966
-  - added console shutdown ELF to all versions prior to 1.966
-  - Optional custom IRX files to make FreeMcBoot/FreeHdBoot support EXFAT USB storage devices
-  - internal HDD APPS partition header data changed to allow KELF execution from HDD-OSD.
+- **sp193** – original FMCB/FHDB installer source
+- **israpps (Matias Israelson)** – modern FreeMcBoot-Installer packages, EXFAT variant, packaging work
+- **ps2homebrew** – Open PS2 Loader / wOPL (Double OPL)
+- **jbit** / **ShendoXT** – pad tester lineage (see Controller Tester)
+- Cheat Device – [root670](https://github.com/root670/CheatDevicePS2) / community builds
 
-[Original source code and binaries](https://sites.google.com/view/ysai187/home/projects/fmcbfhdb)
+Everything below is **what this fork changes** on top of israpps’ installer.
 
-Special Thanks to SP193 for leaving the installer source code! it will help me out to add features to mi wLE mod ^^
+---
 
------
+## Changes vs israpps FreeMcBoot-Installer
 
-<details>
-  <summary> <b> APPS Package contents: </b> </summary>
+### Installer UI / flow
 
-```ini
-ESR ESR r10f_direct
-[Open PS2 Loader]
-1.0.0
-latest
-0.9.3
-0.9.2
-0.9.1
-0.9.0
-0.8
-0.7
-0.6
-0.5
-[Cheats]
-Cheat device (PAL)
-Cheat device (NTSC)
-[uLaunchELF]
-4.43x_isr
-4.43x_isr_hdd
-4.43a 41e4ebe
-4.43a_khn
-4.43a latest
-[MultiMedia]
-SMS
-Argon
-[PS2ESDL]
-v0.810 OB
-v0.825 OB
-[GSM]
-v0.23x
-v0.38
-[Emulators]
-FCEU
-InfoNES
-SNES Station (0.2.4S)
-SNES Station (0.2.6C)
-SNES9x
-InfoGB
-GPS2
-GPSP-KAI
-ReGBA
-TempGBA
-VBAM
-PVCS
-RetroArch (1.9.1)
-[Utilities]
-MechaPwn 2.0
-LensChanger 1.2b
-Padtest
-RDRAM TEST
-PS2 Ident
-HDD Checker v0.964
-Memory Card Anihilator 2.0
-HWC Language Selector
-Launch disc
-Shutdown System app
+| Change | Detail |
+|--------|--------|
+| Branding | Custom wallpaper (`installer/resources/background.png`), version stamp **ashorizonends** |
+| Memory card slot | Explicit **slot 1 / slot 2** prompt instead of relying on R1 extras menus |
+| Format before install | Asks whether to **format the card before installing** |
+| OPL choice | During FMCB/FHDB install: **Standard OPL**, **Double OPL**, or **Both** (only selected ELF(s) are copied) |
+
+### 1.966 install package (`installer_res/1966/INSTALL`)
+
+| Change | Detail |
+|--------|--------|
+| Menu branding | OSD header: **Ultimate FreeMcBoot [ashorizonends.com]** |
+| Dual OPL | **Open PS2 Loader** (`OPNPS2LD.ELF`) and **Double OPL** (`WOPNPS2LD.ELF`) as separate menu items |
+| Controller Tester | Replaces stock Pad Test with [ashorizonends Controller Tester](https://github.com/horizonends/controllertester) (`CONTROLLERTESTER.ELF`, `PADTEST.ELF` kept as fallback name) |
+| Cheat Device | NTSC + PAL packages under `APPS/cheats-ntsc/` and `APPS/cheats-pal/` |
+| Cheat Chooser | Optional `CHEAT_CHOOSER.ELF` in APPS (region picker; see [PS2-Cheat-Chooser](https://github.com/horizonends/PS2-Cheat-Chooser)) |
+| wOPL | Non-beta Double OPL build from [wOPL releases](https://github.com/ps2homebrew/wOPL/releases) |
+
+### What we did **not** rewrite
+
+Core FMCB/FHDB install logic, MagicGate binding, multi-install behaviour (still discouraged/blocked as upstream), and the overall israpps packaging model are unchanged unless listed above.
+
+---
+
+## Built installer ELFs
+
+After `make rebuild` in `installer/`:
+
+| File | Use |
+|------|-----|
+| `installer_res/ashorizonends_Installer_EXFAT.elf` | **Preferred** from exFAT / modern USB |
+| `installer_res/ashorizonends_Installer.elf` | Non-EXFAT USB |
+| `FMCBInstaller*.elf` | Same builds under the classic filenames |
+
+Run the ELF from the folder that also contains `INSTALL/` and `lang/` (same layout as upstream packages).
+
+---
+
+## Build (Podman / Docker)
+
+Needs [ps2dev](https://github.com/ps2dev/ps2dev):
+
+```bash
+cd installer
+podman run --rm -v "$PWD/..":/src:Z -w /src/installer docker.io/ps2dev/ps2dev:v1.0 \
+  sh -c 'apk add --no-cache build-base >/dev/null && \
+    make rebuild FMCB_INSTALLER_VERSION=ashorizonends EE_BIN_DIR=../installer_res/ && \
+    make rebuild FMCB_INSTALLER_VERSION=ashorizonends EE_BIN_DIR=../installer_res/ EXFAT=1'
 ```
 
-</details>
+Then copy `UNC_FMCBInstaller*.elf` to `ashorizonends_Installer*.elf` if your Makefile does not already.
+
+---
+
+## Related projects
+
+- [horizonends/controllertester](https://github.com/horizonends/controllertester) – Controller Tester ELF
+- [horizonends/PS2-Cheat-Chooser](https://github.com/horizonends/PS2-Cheat-Chooser) – NTSC/PAL Cheat Device picker + packages
+
+---
+
+## Licence / disclaimer
+
+Same terms as upstream FreeMcBoot-Installer / original FMCB work. Not affiliated with Sony. Use at your own risk. Always keep backups of memory cards before formatting or installing.

@@ -17,7 +17,13 @@ installer_res/BDMAssault.7z
 installer_res/lang
 installer_res/INSTALL
 *.7z
+*.zip
+installer_res/UltimateFreeMcBoot-*/
+installer_res/usb_mass_APPS/
 installer/*_irx.c
 installer/IOPRP_img.c
 installer/background.c
 installer/buttons.c
+
+# VFAT case-collision duplicates (keep cheatdevice.elf only)
+**/CHEATDEVICE.ELF
