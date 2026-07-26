@@ -1,0 +1,23 @@
+
+1953/__Package/FMCBInstaller.elf
+1965/__Package/FMCBInstaller.elf
+1966/__Package/FMCBInstaller.elf
+**.o
+**.BAK
+MASS/APPS/APP_LIST.sh
+MASS/APPS/applist.ini
+MASS/APPS/ISR.ETL
+.vscode/*
+
+# Local build / emu (do not publish)
+emu/
+pcsx2-usb-test/
+installer_res/READY_TO_USE/
+installer_res/BDMAssault.7z
+installer_res/lang
+installer_res/INSTALL
+*.7z
+installer/*_irx.c
+installer/IOPRP_img.c
+installer/background.c
+installer/buttons.c
