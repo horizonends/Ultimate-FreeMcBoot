@@ -8,13 +8,22 @@ Site: [ashorizonends.com](https://ashorizonends.com)
 
 ---
 
-## Credits (upstream)
+## Credits
+
+### Upstream
 
 - **sp193** – original FMCB/FHDB installer source
 - **israpps (Matias Israelson)** – modern FreeMcBoot-Installer packages, EXFAT variant, packaging work
 - **ps2homebrew** – Open PS2 Loader / wOPL (Double OPL)
-- **jbit** / **ShendoXT** – pad tester lineage (see Controller Tester)
+- **jbit** / **ShendoXT** – pad tester lineage (Controller Tester remake is inspired by their work)
 - Cheat Device – [root670](https://github.com/root670/CheatDevicePS2) / community builds
+
+### Related ashorizonends projects (same effort / bundled with this package)
+
+These two repos are part of the same Ultimate FreeMcBoot / ashorizonends packaging effort and ship alongside (or are copied into) this installer:
+
+- **[Controller Tester](https://github.com/horizonends/controllertester)** – pad tester remake (inspired by jbit / ShendoXT); bundled as `CONTROLLERTESTER.ELF`
+- **[PS2 Cheat Chooser](https://github.com/horizonends/PS2-Cheat-Chooser)** – NTSC/PAL Cheat Device region picker + packages; bundled as `CHEAT_CHOOSER.ELF` and `cheats-*`
 
 Everything below is **what this fork changes** on top of israpps’ installer.
 
@@ -79,6 +88,8 @@ Then copy `UNC_FMCBInstaller*.elf` to `ashorizonends_Installer*.elf` if your Mak
 ---
 
 ## Related projects
+
+Same ashorizonends effort as this installer (also credited above):
 
 - [horizonends/controllertester](https://github.com/horizonends/controllertester) – Controller Tester ELF
 - [horizonends/PS2-Cheat-Chooser](https://github.com/horizonends/PS2-Cheat-Chooser) – NTSC/PAL Cheat Device picker + packages

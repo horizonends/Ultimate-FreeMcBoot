@@ -2,7 +2,7 @@
 
 Not built into this installer tree as a separate product.
 
-Canonical private repo (chooser ELF + `cheats-ntsc` / `cheats-pal` packages):
+Canonical repo (chooser ELF + `cheats-ntsc` / `cheats-pal` packages), part of the same ashorizonends / Ultimate FreeMcBoot effort:
 
 https://github.com/horizonends/PS2-Cheat-Chooser
 
