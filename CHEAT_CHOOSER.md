@@ -1,11 +1,7 @@
-# Cheat Chooser / Cheat Device
+# Cheat Chooser
 
-Not built into this installer tree as a separate product.
+The PS2 Cheat Chooser lives in a **private** repo and is **not** shipped in this installer (`INSTALL/APPS` does not include `CHEAT_CHOOSER.ELF`).
 
-Canonical repo (chooser ELF + `cheats-ntsc` / `cheats-pal` packages), part of the same ashorizonends / Ultimate FreeMcBoot effort:
+Canonical project: https://github.com/horizonends/PS2-Cheat-Chooser
 
-https://github.com/horizonends/PS2-Cheat-Chooser
-
-**Private for now** (not a public release of the chooser sources).
-
-The 1966 `INSTALL/APPS/cheats-*` folders in this repo are the copies baked into the FMCB install payload.
+This package still includes NTSC/PAL Cheat Device copies under `installer_res/1966/INSTALL/APPS/cheats-*`.
