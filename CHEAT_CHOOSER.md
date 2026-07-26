@@ -1,7 +1,9 @@
-# Cheat Chooser
+# Cheat Chooser / Cheat Device
 
-The region picker ELF lives in a **separate project**:
+Not built into this installer tree as a separate product.
 
-`/home/sammy/Documents/PS2-Cheat-Chooser`
+Canonical private repo (chooser ELF + `cheats-ntsc` / `cheats-pal` packages):
 
-FreeMcBoot installs **Cheat Device [NTSC]** and **Cheat Device [PAL]** directly.
+https://github.com/horizonends/PS2-Cheat-Chooser
+
+The 1966 `INSTALL/APPS/cheats-*` folders in this repo are the copies baked into the FMCB install payload.
