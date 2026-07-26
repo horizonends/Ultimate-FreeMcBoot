@@ -21,7 +21,6 @@ Site: [ashorizonends.com](https://ashorizonends.com)
 ### Related ashorizonends projects
 
 - **[Controller Tester](https://github.com/horizonends/controllertester)** – pad tester remake (inspired by jbit / ShendoXT); bundled as `CONTROLLERTESTER.ELF`
-- **[PS2 Cheat Chooser](https://github.com/horizonends/PS2-Cheat-Chooser)** *(private for now)* – separate related project (NTSC/PAL Cheat Device region picker); **not** shipped in this installer package
 
 Everything below is **what this fork changes** on top of israpps’ installer.
 
@@ -89,7 +88,6 @@ Then copy `UNC_FMCBInstaller*.elf` to `ashorizonends_Installer*.elf` if your Mak
 Same ashorizonends effort as this installer (also credited above):
 
 - [horizonends/controllertester](https://github.com/horizonends/controllertester) – Controller Tester ELF
-- [horizonends/PS2-Cheat-Chooser](https://github.com/horizonends/PS2-Cheat-Chooser) *(private for now)* – related project; not part of this installer package
 
 ---
 
