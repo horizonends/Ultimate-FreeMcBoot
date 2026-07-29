@@ -1,29 +1,60 @@
-Package made by Matias Israelson (AKA: El_isra)
-get the latest package here: https://github.com/israpps/FreeMcBoot-Installer/releases
-FreeMcBoot installer originally made by sp193
+# Ultimate FreeMcBoot (ashorizonends) Changelog
 
-Changes:
+## v1.0.3-alpha.3 — 2026-07-29 (Features)
+- Removed old Pad Test (`PADTEST.ELF` / `PADTEST/`) entirely
+- Controller Tester only: `CONTROLLERTESTER.ELF` (no PADTEST CNF fallbacks)
+- Dedupe Cheat Device: keep lowercase `cheatdevice.elf` only (drop identical `CHEATDEVICE.ELF`)
 
-- changed icon Flags:
-	* `B?EXEC-SYSTEM` will be shown as "ps2 software"
-	* `SYS-CONF` will be shown as "settings"
-- Changed icons:
-  * `B?EXEC-SYSTEM` By SpaceCoyote
-  * `SYS-CONF` By SpaceCoyote
-- added 1.965 version with:
-  * Poweroff external utility bundled
-- changed background, font, and font color for all installers
-- Added 1.953 version fused inside 1.965 package to avoid old magicgate binding issues caused by the program
-- 1.965 and 1.953: replace original FSCK with 1.966 FSCK (updated), and removed old font, wose size was 16mb (thats a lot because FSCK goes to `__system` partition, wich is 128mb sized, (so that font took 1/8 of total size)
-- added manual HDD formatting feature
-- updated lang
-- normal install variants names made noob-friendly
-- installers can now detect and inform rare consoles and tell the user (ie: normal PS2 with `1.80` ROM)
-- blocked multi-install, no need for it
-- System update folders `B?EXEC-SYSTEM` will have icon.sys variations for easy identification. ie: japanese system update folder (`BIEXEC-SYSTEM`) will be shown on OSD as "FreeMcBoot (japan)"
-- OPL 1.0.0 bundled in package
-- replaced uLaunchELF 4.43x `41e4ebe` with uLaunchELF 4.43x_isr
-- add uLaunchELF 4.43x_isr_hdd on FreeHdBoot install pacakge
-- HDD APPS partition will hold OPL 1.0.0 and uLaunchELF 4.43x_isr in KELF format, ready to be executed from HDD-OSD
-- (related to previous entry) modified HDD APPS partition Header attributes to allow executiuon of uLaunchELF KELF
-- all the installers are rebuilt with ps2dev:v1.0
+## v1.0.3-toolkit-alpha.3 — 2026-07-29
+- Same Pad Test removal as Features; Controller Tester only
+- Same Cheat Device ELF dedupe as Features
+- Version matched to Features `v1.0.3-alpha.3`
+
+## v1.0.3-alpha.2 — 2026-07-29 (Features)
+- POPStarter.ELF added under `INSTALL/APPS/POPSTARTER/` and `APPS-HDD`
+- OSD menu entry for POPStarter (Features FREEMCB/FREEHDB)
+
+## v1.0.3-toolkit-alpha.2 — 2026-07-29
+- Version matched to Features `v1.0.3-alpha.2` (same Features baseline + toolkit apps)
+- POPStarter.ELF + menu entry included with Toolkit INSTALL
+
+## v1.0.3-alpha.1 — 2026-07-29 (Features)
+- Features OSD: ESR/SMS removed (modder tools)
+- Pre-release for testing Features menu cleanup
+
+## v1.0.0-toolkit-alpha.1 — 2026-07-29
+- First Ultimate FreeMcBoot Toolkit alpha (separate modder installer)
+- Includes: ESR, SMS, PS2Ident, Apollo Save Tool v1.0.2, MCA v2.2 (packed), plus Features baseline apps
+
+## v1.0.2-alpha.1 — 2026-07-29
+
+Alpha (pre-release): app updates only.
+- Controller Tester → horizonends/controllertester v1.0.0
+- Cheat Device → root670/CheatDevicePS2 v1.7.5
+
+## v1.0.1 — 2026-07-29
+
+- Replaced uLaunchELF / wLaunchELF_ISR with [wLaunchELF_R3Z](https://github.com/saildot4k/wLaunchELF_R3Z) **v4.76** as `BOOT.ELF` (and HDD `ULE_ISR_HDD.ELF`)
+- OSD menu item renamed to **File Manager** (was File Browser)
+- Bundled EXFAT `USBD.IRX` / `USBHDFSD.IRX` in `INSTALL/SYS-CONF` (installed to `mc?:/SYS-CONF` with FMCB)
+- POPStarter EXFAT IRXes included under `INSTALL/APPS/POPSTARTER/`
+
+## v1.0.0 — 2026-07-26
+
+First public ashorizonends package (FMCB 1.966 base).
+
+- Custom branding / wallpaper; memory card slot + format prompts; OPL Standard / Double / Both choice
+- Dual OPL, Controller Tester, Cheat Device NTSC+PAL
+- Non-beta Double OPL from [ps2homebrew/wOPL](https://github.com/ps2homebrew/wOPL/releases)
+
+---
+
+## Upstream (israpps FreeMcBoot-Installer)
+
+Package originally by Matias Israelson (AKA: El_isra).  
+Installer originally by sp193.
+
+- Icon flags / icons (SpaceCoyote); 1.965 + 1.953 fused packages; FSCK updates
+- Manual HDD formatting; lang updates; multi-install blocked
+- OPL 1.0.0; uLaunchELF 4.43x_isr / _hdd (replaced in ashorizonends v1.0.1 by wLaunchELF_R3Z)
+- Installers rebuilt with ps2dev:v1.0

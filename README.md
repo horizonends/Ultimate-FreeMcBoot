@@ -16,16 +16,32 @@ Site: [ashorizonends.com](https://ashorizonends.com)
 
 App-only bumps ship as patch versions (`1.0.x`); experimental app sets can use GitHub pre-releases (alphas) without renaming Toolkit as “dev.”
 
+### USB / zip folder names
+
+Keep installer **folder** names short for the PS2 file browser and USB sticks. Put the version in `title.cfg` (and in GitHub zip filenames), not in the folder name:
+
+| USB folder | Package | `title.cfg` example |
+|------------|---------|---------------------|
+| `UFMCB-Features` | Everyday player installer | `title=UFMCB Features v1.0.3-alpha.3` |
+| `UFMCB-Toolkit` | Modder installer | `title=UFMCB Toolkit v1.0.3-alpha.3` |
+
+Release zip names stay descriptive for GitHub:
+
+- `UFMCB-Features-v1.0.3-alpha.3.zip` (contains `UFMCB-Features/`)
+- `UFMCB-Toolkit-v1.0.3-alpha.3.zip` (contains `UFMCB-Toolkit/`)
+
+To refresh a stick at `/run/media/sammy/PS2`: `./scripts/sync-ufmcb-usb.sh`
+
 ### Version pairing (Features ↔ Toolkit)
 
 Ship matching numbers so Features and Toolkit stay aligned:
 
 | Features | Toolkit |
 |----------|---------|
-| `vX.Y.Z` | `vX.Y.Z-toolkit` |
-| `vX.Y.Z-alpha.N` | `vX.Y.Z-toolkit-alpha.N` |
+| `vX.Y.Z` | `vX.Y.Z` (Toolkit package) |
+| `vX.Y.Z-alpha.N` | `vX.Y.Z-alpha.N` (Toolkit package) |
 
-Example: Features `v1.0.3-alpha.2` pairs with Toolkit `v1.0.3-toolkit-alpha.2`.
+Example: Features `v1.0.3-alpha.3` pairs with Toolkit `v1.0.3-alpha.3` (separate zips / folders).
 
 **POPStarter** (`POPSTARTER.ELF`) is included in the Features package (and Toolkit). **OSDMenu** remains a planned separate installer.
 
@@ -67,7 +83,7 @@ Everything below is **what this fork changes** on top of israpps’ installer.
 |--------|--------|
 | Menu branding | OSD header: **Ultimate FreeMcBoot [ashorizonends.com]** |
 | Dual OPL | **Open PS2 Loader** (`OPNPS2LD.ELF`) and **Double OPL** (`WOPNPS2LD.ELF`) as separate menu items |
-| Controller Tester | Replaces stock Pad Test with [ashorizonends Controller Tester](https://github.com/horizonends/controllertester) (`CONTROLLERTESTER.ELF`, `PADTEST.ELF` kept as fallback name) |
+| Controller Tester | [ashorizonends Controller Tester](https://github.com/horizonends/controllertester) only (`CONTROLLERTESTER.ELF`); old Pad Test (`PADTEST.ELF`) removed |
 | Cheat Device | NTSC + PAL packages under `APPS/cheats-ntsc/` and `APPS/cheats-pal/` |
 | wOPL | Non-beta Double OPL build from [wOPL releases](https://github.com/ps2homebrew/wOPL/releases) |
 | File Manager | [wLaunchELF_R3Z](https://github.com/saildot4k/wLaunchELF_R3Z) v4.76 replaces uLaunchELF as `BOOT.ELF` (OSD **File Manager**) |

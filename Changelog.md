@@ -1,5 +1,15 @@
 # Ultimate FreeMcBoot (ashorizonends) Changelog
 
+## v1.0.3-alpha.3 — 2026-07-29 (Features)
+- Removed old Pad Test (`PADTEST.ELF` / `PADTEST/`) entirely
+- Controller Tester only: `CONTROLLERTESTER.ELF` (no PADTEST CNF fallbacks)
+- Dedupe Cheat Device: keep lowercase `cheatdevice.elf` only (drop identical `CHEATDEVICE.ELF`)
+
+## v1.0.3-toolkit-alpha.3 — 2026-07-29
+- Same Pad Test removal as Features; Controller Tester only
+- Same Cheat Device ELF dedupe as Features
+- Version matched to Features `v1.0.3-alpha.3`
+
 ## v1.0.3-alpha.2 — 2026-07-29 (Features)
 - POPStarter.ELF added under `INSTALL/APPS/POPSTARTER/` and `APPS-HDD`
 - OSD menu entry for POPStarter (Features FREEMCB/FREEHDB)
