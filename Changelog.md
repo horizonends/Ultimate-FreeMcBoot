@@ -1,5 +1,14 @@
 # Ultimate FreeMcBoot (ashorizonends) Changelog
 
+## v1.0.3-alpha.4 — 2026-07-30 (Features)
+- Fix FMCB logo hang: revert `INSTALL/SYS-CONF` `USBD.IRX` / `USBHDFSD.IRX` to **stock** (non-EXFAT) drivers
+- Default MC install uses stock USB IRXes again; EXFAT remains optional via `FMCB_EXFAT/` / EXFAT installer path
+- POPStarter keeps EXFAT `usbd.irx` / `usbhdfsd.irx` under `APPS/POPSTARTER/` for mass:/POPSTARTER/
+
+## v1.0.3-toolkit-alpha.4 — 2026-07-30
+- Same SYS-CONF stock USB IRX restore as Features (logo hang fix)
+- Version matched to Features `v1.0.3-alpha.4`
+
 ## v1.0.3-alpha.3 — 2026-07-29 (Features)
 - Removed old Pad Test (`PADTEST.ELF` / `PADTEST/`) entirely
 - Controller Tester only: `CONTROLLERTESTER.ELF` (no PADTEST CNF fallbacks)

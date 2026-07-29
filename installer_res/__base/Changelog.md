@@ -1,5 +1,12 @@
 # Ultimate FreeMcBoot (ashorizonends) Changelog
 
+## v1.0.3-alpha.4 — 2026-07-30 (Features)
+- Fix FMCB logo hang: revert SYS-CONF USB drivers to stock (non-EXFAT)
+- EXFAT optional via FMCB_EXFAT / EXFAT installer path
+
+## v1.0.3-toolkit-alpha.4 — 2026-07-30
+- Same stock USB IRX restore; version matched to Features `v1.0.3-alpha.4`
+
 ## v1.0.3-alpha.3 — 2026-07-29 (Features)
 - Removed old Pad Test (`PADTEST.ELF` / `PADTEST/`) entirely
 - Controller Tester only: `CONTROLLERTESTER.ELF` (no PADTEST CNF fallbacks)
