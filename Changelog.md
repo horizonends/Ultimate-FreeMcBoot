@@ -1,5 +1,11 @@
 # Ultimate FreeMcBoot (ashorizonends) Changelog
 
+## v1.0.2-alpha.1 — 2026-07-29
+
+Alpha (pre-release): app updates only.
+- Controller Tester → horizonends/controllertester v1.0.0
+- Cheat Device → root670/CheatDevicePS2 v1.7.5
+
 ## v1.0.1 — 2026-07-29
 
 - Replaced uLaunchELF / wLaunchELF_ISR with [wLaunchELF_R3Z](https://github.com/saildot4k/wLaunchELF_R3Z) **v4.76** as `BOOT.ELF` (and HDD `ULE_ISR_HDD.ELF`)
