@@ -1,5 +1,13 @@
 # Ultimate FreeMcBoot (ashorizonends) Changelog
 
+## v1.0.3-alpha.2 — 2026-07-29 (Features)
+- POPStarter.ELF added under `INSTALL/APPS/POPSTARTER/` and `APPS-HDD`
+- OSD menu entry for POPStarter (Features FREEMCB/FREEHDB)
+
+## v1.0.3-toolkit-alpha.2 — 2026-07-29
+- Version matched to Features `v1.0.3-alpha.2` (same Features baseline + toolkit apps)
+- POPStarter.ELF + menu entry included with Toolkit INSTALL
+
 ## v1.0.3-alpha.1 — 2026-07-29 (Features)
 - Features OSD: ESR/SMS removed (modder tools)
 - Pre-release for testing Features menu cleanup
