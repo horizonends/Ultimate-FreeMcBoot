@@ -1,29 +1,28 @@
-Package made by Matias Israelson (AKA: El_isra)
-get the latest package here: https://github.com/israpps/FreeMcBoot-Installer/releases
-FreeMcBoot installer originally made by sp193
+# Ultimate FreeMcBoot (ashorizonends) Changelog
 
-Changes:
+## v1.1.0 — 2026-07-29
 
-- changed icon Flags:
-	* `B?EXEC-SYSTEM` will be shown as "ps2 software"
-	* `SYS-CONF` will be shown as "settings"
-- Changed icons:
-  * `B?EXEC-SYSTEM` By SpaceCoyote
-  * `SYS-CONF` By SpaceCoyote
-- added 1.965 version with:
-  * Poweroff external utility bundled
-- changed background, font, and font color for all installers
-- Added 1.953 version fused inside 1.965 package to avoid old magicgate binding issues caused by the program
-- 1.965 and 1.953: replace original FSCK with 1.966 FSCK (updated), and removed old font, wose size was 16mb (thats a lot because FSCK goes to `__system` partition, wich is 128mb sized, (so that font took 1/8 of total size)
-- added manual HDD formatting feature
-- updated lang
-- normal install variants names made noob-friendly
-- installers can now detect and inform rare consoles and tell the user (ie: normal PS2 with `1.80` ROM)
-- blocked multi-install, no need for it
-- System update folders `B?EXEC-SYSTEM` will have icon.sys variations for easy identification. ie: japanese system update folder (`BIEXEC-SYSTEM`) will be shown on OSD as "FreeMcBoot (japan)"
-- OPL 1.0.0 bundled in package
-- replaced uLaunchELF 4.43x `41e4ebe` with uLaunchELF 4.43x_isr
-- add uLaunchELF 4.43x_isr_hdd on FreeHdBoot install pacakge
-- HDD APPS partition will hold OPL 1.0.0 and uLaunchELF 4.43x_isr in KELF format, ready to be executed from HDD-OSD
-- (related to previous entry) modified HDD APPS partition Header attributes to allow executiuon of uLaunchELF KELF
-- all the installers are rebuilt with ps2dev:v1.0
+- Replaced uLaunchELF / wLaunchELF_ISR with [wLaunchELF_R3Z](https://github.com/saildot4k/wLaunchELF_R3Z) **v4.76** as `BOOT.ELF` (and HDD `ULE_ISR_HDD.ELF`)
+- OSD menu item renamed to **File Manager** (was File Browser)
+- Bundled EXFAT `USBD.IRX` / `USBHDFSD.IRX` in `INSTALL/SYS-CONF` (installed to `mc?:/SYS-CONF` with FMCB)
+- POPStarter EXFAT IRXes included under `INSTALL/APPS/POPSTARTER/`
+
+## v1.0.0 — 2026-07-26
+
+First public ashorizonends package (FMCB 1.966 base).
+
+- Custom branding / wallpaper; memory card slot + format prompts; OPL Standard / Double / Both choice
+- Dual OPL, Controller Tester, Cheat Device NTSC+PAL
+- Non-beta Double OPL from [ps2homebrew/wOPL](https://github.com/ps2homebrew/wOPL/releases)
+
+---
+
+## Upstream (israpps FreeMcBoot-Installer)
+
+Package originally by Matias Israelson (AKA: El_isra).  
+Installer originally by sp193.
+
+- Icon flags / icons (SpaceCoyote); 1.965 + 1.953 fused packages; FSCK updates
+- Manual HDD formatting; lang updates; multi-install blocked
+- OPL 1.0.0; uLaunchELF 4.43x_isr / _hdd (replaced in ashorizonends v1.1.0 by wLaunchELF_R3Z)
+- Installers rebuilt with ps2dev:v1.0

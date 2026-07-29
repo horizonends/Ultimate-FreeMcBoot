@@ -15,6 +15,7 @@ Site: [ashorizonends.com](https://ashorizonends.com)
 - **sp193** – original FMCB/FHDB installer source
 - **israpps (Matias Israelson)** – modern FreeMcBoot-Installer packages, EXFAT variant, packaging work
 - **ps2homebrew** – Open PS2 Loader / wOPL (Double OPL)
+- **[saildot4k / wLaunchELF_R3Z](https://github.com/saildot4k/wLaunchELF_R3Z)** – file browser / ELF launcher (bundled as `BOOT.ELF`)
 - **jbit** / **ShendoXT** – pad tester lineage (Controller Tester remake is inspired by their work)
 - Cheat Device – [root670](https://github.com/root670/CheatDevicePS2) / community builds
 
@@ -46,6 +47,7 @@ Everything below is **what this fork changes** on top of israpps’ installer.
 | Controller Tester | Replaces stock Pad Test with [ashorizonends Controller Tester](https://github.com/horizonends/controllertester) (`CONTROLLERTESTER.ELF`, `PADTEST.ELF` kept as fallback name) |
 | Cheat Device | NTSC + PAL packages under `APPS/cheats-ntsc/` and `APPS/cheats-pal/` |
 | wOPL | Non-beta Double OPL build from [wOPL releases](https://github.com/ps2homebrew/wOPL/releases) |
+| File Manager | [wLaunchELF_R3Z](https://github.com/saildot4k/wLaunchELF_R3Z) v4.76 replaces uLaunchELF as `BOOT.ELF` (OSD **File Manager**) |
 
 ### What we did **not** rewrite
 
