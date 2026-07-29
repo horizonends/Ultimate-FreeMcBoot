@@ -4,11 +4,13 @@
 - Removed old Pad Test (`PADTEST.ELF` / `PADTEST/`) entirely
 - Controller Tester only: `CONTROLLERTESTER.ELF` (no PADTEST CNF fallbacks)
 - Dedupe Cheat Device: keep lowercase `cheatdevice.elf` only (drop identical `CHEATDEVICE.ELF`)
+- Documented MC install sizes in README: Features ~6.74 MB (STD) / ~8.21 MB (both OPLs)
 
 ## v1.0.3-toolkit-alpha.3 — 2026-07-29
 - Same Pad Test removal as Features; Controller Tester only
 - Same Cheat Device ELF dedupe as Features
 - Version matched to Features `v1.0.3-alpha.3`
+- Documented MC install sizes: Toolkit ~9.84 MB (STD) / ~11.31 MB (both OPLs)
 
 ## v1.0.3-alpha.2 — 2026-07-29 (Features)
 - POPStarter.ELF added under `INSTALL/APPS/POPSTARTER/` and `APPS-HDD`

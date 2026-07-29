@@ -32,6 +32,20 @@ Release zip names stay descriptive for GitHub:
 
 To refresh a stick at `/run/media/sammy/PS2`: `./scripts/sync-ufmcb-usb.sh`
 
+### Memory card install size (v1.0.3-alpha.3)
+
+Approximate space written to the **memory card** (SYS-CONF + BOOT + APPS, 1 KiB cluster roundup). Installer UI floors to whole MB. APPS-HDD / FSCK are HDD-only and not counted here.
+
+| Package | Standard OPL | Double OPL | Both OPLs |
+|---------|-------------:|-----------:|----------:|
+| **Features** | **6.74 MB** (shows 6) | **6.91 MB** (shows 6) | **8.21 MB** (shows 8) |
+| **Toolkit** | **9.84 MB** (shows 9) | **10.01 MB** (shows 10) | **11.31 MB** (shows 11) |
+
+Notes:
+- An **8 MB** card fits Features with a **single** OPL choice; **both** OPLs needs more free space.
+- Toolkit needs a larger card (~16 MB+ recommended).
+- Cheats ship one `cheatdevice.elf` per region (NTSC/PAL); no duplicate `CHEATDEVICE.ELF`. No stock PADTEST — Controller Tester only.
+
 ### Version pairing (Features ↔ Toolkit)
 
 Ship matching numbers so Features and Toolkit stay aligned:
