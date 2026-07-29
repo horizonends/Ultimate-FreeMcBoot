@@ -1,14 +1,11 @@
 # ----------------------------------------
-# Free MCBoot Config File
+# Free MCBoot Config File — Ultimate FreeMcBoot (Features)
 # must be in mc?:/SYS-CONF/FREEMCB.CNF or mass:/FREEMCB.CNF
 # ----------------------------------------
 CNF_version = 1
 # ----------------------------------------
 Debug_Screen = 0
 FastBoot = 1
-ESR_Path_E1 = mass:/BOOT/ESR.ELF
-ESR_Path_E2 = mc?:/BOOT/ESR.ELF
-ESR_Path_E3 = mc?:/B?DATA-SYSTEM/ESR.ELF
 pad_delay = 0
 LK_Auto_E1 = OSDSYS
 LK_Auto_E3 = OSDSYS
@@ -23,12 +20,8 @@ LK_L1_E3 = mc?:/B?DATA-SYSTEM/HDLOADER.ELF
 LK_R1_E1 = mass:/BOOT/BOOT.ELF
 LK_R1_E2 = mc?:/BOOT/BOOT.ELF
 LK_R1_E3 = mc?:/B?DATA-SYSTEM/BOOT.ELF
-LK_L2_E1 = mass:/BOOT/SMS.ELF
-LK_L2_E2 = mc?:/BOOT/SMS.ELF
-LK_L2_E3 = mc?:/B?DATA-SYSTEM/SMS.ELF
-LK_R2_E1 = mass:/BOOT/ESR.ELF
-LK_R2_E2 = mc?:/BOOT/ESR.ELF
-LK_R2_E3 = mc?:/B?DATA-SYSTEM/ESR.ELF
+LK_L2_E3 = OSDSYS
+LK_R2_E3 = OSDSYS
 LK_L3_E3 = OSDSYS
 LK_R3_E3 = OSDSYS
 LK_Up_E3 = OSDSYS
@@ -80,20 +73,12 @@ name_OSDSYS_ITEM_5 = Controller Tester
 path1_OSDSYS_ITEM_5 = mc?:/APPS/CONTROLLERTESTER.ELF
 path2_OSDSYS_ITEM_5 = mc?:/APPS/PADTEST.ELF
 path3_OSDSYS_ITEM_5 = mass:/APPS/CONTROLLERTESTER.ELF
-name_OSDSYS_ITEM_6 = ESR
-path1_OSDSYS_ITEM_6 = mass:/BOOT/ESR.ELF
-path2_OSDSYS_ITEM_6 = mc?:/BOOT/ESR.ELF
-path3_OSDSYS_ITEM_6 = mc?:/B?DATA-SYSTEM/ESR.ELF
-name_OSDSYS_ITEM_7 = Simple Media System
-path1_OSDSYS_ITEM_7 = mass:/BOOT/SMS.ELF
-path2_OSDSYS_ITEM_7 = mc?:/BOOT/SMS.ELF
-path3_OSDSYS_ITEM_7 = mc?:/B?DATA-SYSTEM/SMS.ELF
-name_OSDSYS_ITEM_8 = Launch Disc
-path1_OSDSYS_ITEM_8 = FASTBOOT
-name_OSDSYS_ITEM_9 = File Manager
-path1_OSDSYS_ITEM_9 = mass:/BOOT/BOOT.ELF
-path2_OSDSYS_ITEM_9 = mc?:/BOOT/BOOT.ELF
-path3_OSDSYS_ITEM_9 = mc?:/B?DATA-SYSTEM/BOOT.ELF
+name_OSDSYS_ITEM_6 = Launch Disc
+path1_OSDSYS_ITEM_6 = FASTBOOT
+name_OSDSYS_ITEM_7 = File Manager
+path1_OSDSYS_ITEM_7 = mass:/BOOT/BOOT.ELF
+path2_OSDSYS_ITEM_7 = mc?:/BOOT/BOOT.ELF
+path3_OSDSYS_ITEM_7 = mc?:/B?DATA-SYSTEM/BOOT.ELF
 name_OSDSYS_ITEM_98 = Free MCBoot Configurator
 path1_OSDSYS_ITEM_98 = mc?:/SYS-CONF/FMCB_CFG.ELF
 name_OSDSYS_ITEM_99 = Restart System

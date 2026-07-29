@@ -6,6 +6,16 @@ This tree is the **ashorizonends.com** / **Ultimate FreeMcBoot** package: brande
 
 Site: [ashorizonends.com](https://ashorizonends.com)
 
+### Packages
+
+| Package | Audience | Role |
+|---------|----------|------|
+| **Ultimate FreeMcBoot** | Everyday players | Features — FMCB/FHDB, OPL/wOPL, File Manager, Controller Tester, Cheat Device, POPStarter when ready |
+| **Ultimate FreeMcBoot Toolkit** | Modders | Separate installer — PS2Ident, Apollo, MC tools, **ESR**, **SMS**, disc/media helpers, advanced utilities (not a “dev build”) |
+| **OSDMenu** *(planned)* | Alternate menu | Separate installer — OSDMenu path vs classic FMCB OSD |
+
+App-only bumps ship as patch versions (`1.0.x`); experimental app sets can use GitHub pre-releases (alphas) without renaming Toolkit as “dev.”
+
 ---
 
 ## Credits
@@ -48,6 +58,7 @@ Everything below is **what this fork changes** on top of israpps’ installer.
 | Cheat Device | NTSC + PAL packages under `APPS/cheats-ntsc/` and `APPS/cheats-pal/` |
 | wOPL | Non-beta Double OPL build from [wOPL releases](https://github.com/ps2homebrew/wOPL/releases) |
 | File Manager | [wLaunchELF_R3Z](https://github.com/saildot4k/wLaunchELF_R3Z) v4.76 replaces uLaunchELF as `BOOT.ELF` (OSD **File Manager**) |
+| Features menu | Player-focused: OPL / wOPL / Cheats / Controller Tester / Launch Disc / File Manager (**ESR** & **SMS** moved to Toolkit) |
 
 ### What we did **not** rewrite
 

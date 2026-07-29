@@ -1,14 +1,11 @@
 # ----------------------------------------
-# Free HDBoot Config File
+# Free HDBoot Config File — Ultimate FreeMcBoot (Features)
 # must be in hdd0:__sysconf/FMCB/FREEHDB.CNF, mc?:/SYS-CONF/FREEHDB.CNF or mass:/FREEHDB.CNF
 # ----------------------------------------
 CNF_version = 1
 # ----------------------------------------
 Debug_Screen = 0
 FastBoot = 1
-ESR_Path_E1 = mass:/BOOT/ESR.ELF
-ESR_Path_E2 = mc?:/BOOT/ESR.ELF
-ESR_Path_E3 = hdd0:__sysconf:pfs:/FMCB/ESR.ELF
 pad_delay = 0
 LK_Auto_E1 = OSDSYS
 LK_Auto_E3 = OSDSYS
@@ -80,19 +77,15 @@ path1_OSDSYS_ITEM_5 = mc?:/APPS/CONTROLLERTESTER.ELF
 path2_OSDSYS_ITEM_5 = mc?:/APPS/PADTEST.ELF
 path3_OSDSYS_ITEM_5 = hdd0:PP.FHDB.APPS:pfs:/CONTROLLERTESTER.ELF
 path4_OSDSYS_ITEM_5 = hdd0:PP.FHDB.APPS:pfs:/PADTEST/PADTEST.ELF
-name_OSDSYS_ITEM_6 = Simple Media System
-path1_OSDSYS_ITEM_6 = mass:/BOOT/SMS.ELF
-path2_OSDSYS_ITEM_6 = mc?:/BOOT/SMS.ELF
-path3_OSDSYS_ITEM_6 = mc?:/B?DATA-SYSTEM/SMS.ELF
-name_OSDSYS_ITEM_7 = Launch Disc
-path1_OSDSYS_ITEM_7 = FASTBOOT
-name_OSDSYS_ITEM_8 = File Manager
-path1_OSDSYS_ITEM_8 = mass:/BOOT/BOOT.ELF
-path2_OSDSYS_ITEM_8 = mc?:/BOOT/BOOT.ELF
-path3_OSDSYS_ITEM_8 = hdd0:__sysconf:pfs:/FMCB/BOOT.ELF
-name_OSDSYS_ITEM_9 = File Manager HDD
-path1_OSDSYS_ITEM_9 = hdd0:__sysconf:pfs:/FMCB/ULE_ISR_HDD.ELF
-path2_OSDSYS_ITEM_9 = mc?:/BOOT/ULE_ISR_HDD.ELF
+name_OSDSYS_ITEM_6 = Launch Disc
+path1_OSDSYS_ITEM_6 = FASTBOOT
+name_OSDSYS_ITEM_7 = File Manager
+path1_OSDSYS_ITEM_7 = mass:/BOOT/BOOT.ELF
+path2_OSDSYS_ITEM_7 = mc?:/BOOT/BOOT.ELF
+path3_OSDSYS_ITEM_7 = hdd0:__sysconf:pfs:/FMCB/BOOT.ELF
+name_OSDSYS_ITEM_8 = File Manager HDD
+path1_OSDSYS_ITEM_8 = hdd0:__sysconf:pfs:/FMCB/ULE_ISR_HDD.ELF
+path2_OSDSYS_ITEM_8 = mc?:/BOOT/ULE_ISR_HDD.ELF
 name_OSDSYS_ITEM_98 = Free HDBoot Configurator
 path1_OSDSYS_ITEM_98 = hdd0:__sysconf:pfs:/FMCB/FMCB_CFG.ELF
 name_OSDSYS_ITEM_99 = Restart System

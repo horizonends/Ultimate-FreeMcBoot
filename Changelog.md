@@ -1,5 +1,13 @@
 # Ultimate FreeMcBoot (ashorizonends) Changelog
 
+## v1.0.3-alpha.1 — 2026-07-29 (Features)
+- Features OSD: ESR/SMS removed (modder tools)
+- Pre-release for testing Features menu cleanup
+
+## v1.0.0-toolkit-alpha.1 — 2026-07-29
+- First Ultimate FreeMcBoot Toolkit alpha (separate modder installer)
+- Includes: ESR, SMS, PS2Ident, Apollo Save Tool v1.0.2, MCA v2.2 (packed), plus Features baseline apps
+
 ## v1.0.2-alpha.1 — 2026-07-29
 
 Alpha (pre-release): app updates only.
