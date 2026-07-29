@@ -1,11 +1,14 @@
 # ----------------------------------------
-# Free HDBoot Config File — Ultimate FreeMcBoot (Features)
+# Free HDBoot Config File
 # must be in hdd0:__sysconf/FMCB/FREEHDB.CNF, mc?:/SYS-CONF/FREEHDB.CNF or mass:/FREEHDB.CNF
 # ----------------------------------------
 CNF_version = 1
 # ----------------------------------------
 Debug_Screen = 0
 FastBoot = 1
+ESR_Path_E1 = mass:/BOOT/ESR.ELF
+ESR_Path_E2 = mc?:/BOOT/ESR.ELF
+ESR_Path_E3 = hdd0:__sysconf:pfs:/FMCB/ESR.ELF
 pad_delay = 0
 LK_Auto_E1 = OSDSYS
 LK_Auto_E3 = OSDSYS
@@ -75,7 +78,6 @@ path3_OSDSYS_ITEM_4 = mass:/APPS/cheats-pal/cheatdevice.elf
 name_OSDSYS_ITEM_5 = Controller Tester
 path1_OSDSYS_ITEM_5 = mc?:/APPS/CONTROLLERTESTER.ELF
 path2_OSDSYS_ITEM_5 = hdd0:PP.FHDB.APPS:pfs:/CONTROLLERTESTER.ELF
-path3_OSDSYS_ITEM_5 = mass:/APPS/CONTROLLERTESTER.ELF
 name_OSDSYS_ITEM_6 = POPStarter
 path1_OSDSYS_ITEM_6 = mc?:/APPS/POPSTARTER/POPSTARTER.ELF
 path2_OSDSYS_ITEM_6 = hdd0:PP.FHDB.APPS:pfs:/POPSTARTER/POPSTARTER.ELF

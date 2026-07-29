@@ -1,5 +1,15 @@
 # Ultimate FreeMcBoot (ashorizonends) Changelog
 
+## v1.0.3-alpha.5 — 2026-07-30 (Features) — boot recovery
+- Recovery: restore known-working `ULE_ISR` as `BOOT.ELF` / `ULE_ISR_HDD.ELF` (R3Z temporarily rolled back pending logo fix)
+- Rebuild `FREEMCB.CNF` / `FREEHDB.CNF` from known-good `bd2dcfa` base with minimal Features edits only (File Manager rename, drop ESR/SMS menu items, add POPStarter, no PADTEST fallbacks; keep ESR_Path_* / OSDSYS keys / hotkeys)
+- Stock `SYS-CONF` USB IRXes retained (USBD 26933 / USBHDFSD 48845)
+- Title: UFMCB Features v1.0.3-alpha.5 (boot recovery)
+
+## v1.0.3-toolkit-alpha.5 — 2026-07-30 — boot recovery
+- Same ULE_ISR BOOT restore as Features; toolkit apps kept
+- Stock SYS-CONF USB IRXes; version matched to Features `v1.0.3-alpha.5`
+
 ## v1.0.3-alpha.4 — 2026-07-30 (Features)
 - Fix FMCB logo hang: revert `INSTALL/SYS-CONF` `USBD.IRX` / `USBHDFSD.IRX` to **stock** (non-EXFAT) drivers
 - Default MC install uses stock USB IRXes again; EXFAT remains optional via `FMCB_EXFAT/` / EXFAT installer path

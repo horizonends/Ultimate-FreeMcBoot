@@ -22,17 +22,17 @@ Keep installer **folder** names short for the PS2 file browser and USB sticks. P
 
 | USB folder | Package | `title.cfg` example |
 |------------|---------|---------------------|
-| `UFMCB-Features` | Everyday player installer | `title=UFMCB Features v1.0.3-alpha.4` |
-| `UFMCB-Toolkit` | Modder installer | `title=UFMCB Toolkit v1.0.3-alpha.4` |
+| `UFMCB-Features` | Everyday player installer | `title=UFMCB Features v1.0.3-alpha.5` |
+| `UFMCB-Toolkit` | Modder installer | `title=UFMCB Toolkit v1.0.3-alpha.5` |
 
 Release zip names stay descriptive for GitHub:
 
-- `UFMCB-Features-v1.0.3-alpha.4.zip` (contains `UFMCB-Features/`)
-- `UFMCB-Toolkit-v1.0.3-alpha.4.zip` (contains `UFMCB-Toolkit/`)
+- `UFMCB-Features-v1.0.3-alpha.5.zip` (contains `UFMCB-Features/`)
+- `UFMCB-Toolkit-v1.0.3-alpha.5.zip` (contains `UFMCB-Toolkit/`)
 
 To refresh a stick at `/run/media/sammy/PS2`: `./scripts/sync-ufmcb-usb.sh`
 
-### Memory card install size (v1.0.3-alpha.4)
+### Memory card install size (v1.0.3-alpha.5)
 
 Approximate space written to the **memory card** (SYS-CONF + BOOT + APPS, 1 KiB cluster roundup). Installer UI floors to whole MB. APPS-HDD / FSCK are HDD-only and not counted here.
 
@@ -55,7 +55,7 @@ Ship matching numbers so Features and Toolkit stay aligned:
 | `vX.Y.Z` | `vX.Y.Z` (Toolkit package) |
 | `vX.Y.Z-alpha.N` | `vX.Y.Z-alpha.N` (Toolkit package) |
 
-Example: Features `v1.0.3-alpha.4` pairs with Toolkit `v1.0.3-alpha.4` (separate zips / folders).
+Example: Features `v1.0.3-alpha.5` pairs with Toolkit `v1.0.3-alpha.5` (separate zips / folders).
 
 **POPStarter** (`POPSTARTER.ELF`) is included in the Features package (and Toolkit). **OSDMenu** remains a planned separate installer.
 
