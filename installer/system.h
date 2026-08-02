@@ -40,9 +40,10 @@ struct InstallationFile
 #define INSTALL_MODE_FLAG_CROSS_MODEL  0x08 // Note: This cannot be set with INSTALL_MODE_FLAG_MULTI_INST together. It cannot be set with INSTALL_MODE_FLAG_CROSS_REG either.
 #define INSTALL_MODE_FLAG_CROSS_PSX    0x10
 #define INSTALL_MODE_FLAG_SKIP_CLEANUP 0x20
-#define INSTALL_MODE_FLAG_OPL_STD_ONLY 0x40 /* Install standard OPL only (OPNPS2LD). */
-#define INSTALL_MODE_FLAG_OPL_DBL_ONLY 0x80 /* Install Double OPL only (WOPNPS2LD). */
-/* If neither OPL_*_ONLY flag is set, both OPL builds are installed. */
+#define INSTALL_MODE_FLAG_OPL_STD_ONLY 0x40 /* Install standard OPL only (OPNPS2LD) on target. */
+#define INSTALL_MODE_FLAG_OPL_DBL_ONLY 0x80 /* Install Double OPL only (WOPNPS2LD) on target. */
+#define INSTALL_MODE_FLAG_OPL_BOTH_SPLIT 0x100 /* Standard OPL on target; Double OPL on USB (mass:/APPS). */
+/* If no OPL_* flag is set, both OPL builds are installed on the target (legacy). */
 
 struct FileCopyTarget
 {

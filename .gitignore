@@ -27,3 +27,7 @@ installer/buttons.c
 
 # VFAT case-collision duplicates (keep cheatdevice.elf only)
 **/CHEATDEVICE.ELF
+
+# Cheat Device databases (needed on MC)
+!**/CheatDatabase.zip
+
