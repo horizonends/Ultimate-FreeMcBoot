@@ -20,6 +20,11 @@ installer_res/INSTALL
 *.zip
 installer_res/UltimateFreeMcBoot-*/
 installer_res/usb_mass_APPS/
+
+# Local package dirs / old USB layouts (rebuild from installer_res; zips already ignored)
+UFMCB-Features/
+UFMCB-Toolkit/
+FMCBinst-*/
 installer/*_irx.c
 installer/IOPRP_img.c
 installer/background.c

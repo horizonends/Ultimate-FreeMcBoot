@@ -47,6 +47,7 @@ all: $(EE_BIN)
 $(EE_BIN_PACKED): $(EE_BIN)
 	@echo " -- Compressing"
 	ps2-packer -v $< $@
+	cp -f $@ $(EE_BIN_DIR)ashorizonends_Installer$(HAS_EXFAT).elf
 
 clean:
 	rm -f $(EE_BIN) $(EE_BIN_REL) $(EE_OBJS) *_irx.c background.c buttons.c IOPRP_img.c

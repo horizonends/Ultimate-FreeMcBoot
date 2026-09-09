@@ -23,8 +23,9 @@ How to install (Features)
 
 Important
 ---------
-- SYS-CONF uses stock USB drivers for reliable boot.
-- Optional EXFAT setup files are under FMCB_EXFAT/ — do not confuse with the main install.
+- SYS-CONF uses stock USB drivers for reliable boot (do not mix in optional EXFAT IRXes).
+- Use ashorizonends_Installer_EXFAT.elf on exFAT USB sticks; ashorizonends_Installer.elf on FAT32.
+- Only run the ashorizonends installer ELFs in this folder (not FMCBInstaller.elf from other packages).
 - Always back up memory cards before formatting or installing.
 
 Not affiliated with Sony. Use at your own risk.

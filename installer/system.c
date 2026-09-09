@@ -19,6 +19,7 @@
 
 #include <sys/stat.h>
 #include <sys/fcntl.h>
+#include <unistd.h>
 
 #include <libgs.h>
 
@@ -52,9 +53,7 @@ static int DeleteFolder(const char *folder);
 static int DeleteFolderIfEmpty(const char *folder);
 static int AddDirContentsToFileCopyList(const char *RootFolderPath, const char *srcRelativePath, const char *destination, unsigned int CurrentLevel, struct FileCopyTarget **FileCopyList, unsigned int *CurrentNumFiles, unsigned int *CurrentNumDirs, unsigned int *TotalRequiredSpaceForFiles);
 static void PruneOplFromCopyList(struct FileCopyTarget **FileCopyList, unsigned int *CurrentNumFiles, unsigned int *CurrentNumDirs, unsigned int *TotalRequiredSpaceForFiles, unsigned int flags);
-static void PruneToolkitUsbAppsFromCopyList(struct FileCopyTarget **FileCopyList, unsigned int *CurrentNumFiles, unsigned int *CurrentNumDirs, unsigned int *TotalRequiredSpaceForFiles);
-static int CopyWoplToInstallMedia(const char *RootFolder);
-static int CopyToolkitUsbAppsToInstallMedia(const char *RootFolder);
+static int CopyWoplToInstallMedia(const char *RootFolder, unsigned int flags);
 static int GetMcFreeSpace(int port, int slot);
 static int EnableHDDBooting(void);
 static int CopyFilesToHDD(const char *RootFolder, const struct FileCopyTarget *FileCopyList, unsigned int NumFilesEntries, unsigned int TotalNumBytes, unsigned int flags);
@@ -71,6 +70,73 @@ static int DumpMemoryCard(int port, int slot, FILE *file, unsigned short int Pag
 static int RestoreMemoryCard(int port, int slot, FILE *file, const struct MCTools_McSpecData *McSpecData);
 static void WorkerThread(void *arg);
 static int LoadOSDFile(const char *path, void **pBuffer, int *pSize, int *pRSize);
+
+static char InstallerRootDir[256] = "";
+
+static void TrimTrailingSlash(char *path)
+{
+    size_t len;
+
+    if (path == NULL)
+        return;
+
+    len = strlen(path);
+    while (len > 0 && path[len - 1] == '/') {
+        path[--len] = '\0';
+    }
+}
+
+static void GetInstallFolderPath(char *out, size_t outsz)
+{
+    char root[256];
+
+    if (InstallerRootDir[0] != '\0') {
+        strncpy(root, InstallerRootDir, sizeof(root) - 1);
+        root[sizeof(root) - 1] = '\0';
+    } else if (getcwd(root, sizeof(root) - 1) != NULL)
+        root[sizeof(root) - 1] = '\0';
+    else {
+        snprintf(out, outsz, "INSTALL");
+        return;
+    }
+
+    TrimTrailingSlash(root);
+    snprintf(out, outsz, "%s/INSTALL", root);
+}
+
+void InitInstallerMediaPath(int argc, char *argv[])
+{
+    const char *elf;
+    char *slash;
+    size_t len;
+
+    InstallerRootDir[0] = '\0';
+
+    if (argc > 0 && argv != NULL && argv[0] != NULL) {
+        elf = argv[0];
+        slash = strrchr(elf, '/');
+        if (slash != NULL && slash > elf) {
+            len = (size_t)(slash - elf);
+            if (len > 0 && len < sizeof(InstallerRootDir)) {
+                memcpy(InstallerRootDir, elf, len);
+                InstallerRootDir[len] = '\0';
+            }
+        }
+    }
+
+    if (InstallerRootDir[0] == '\0')
+        getcwd(InstallerRootDir, sizeof(InstallerRootDir) - 1);
+
+    TrimTrailingSlash(InstallerRootDir);
+
+    if (InstallerRootDir[0] != '\0' && chdir(InstallerRootDir) == 0)
+        DEBUG_PRINTF("InitInstallerMediaPath: root=%s\n", InstallerRootDir);
+}
+
+int IsToolkitInstallPackage(void)
+{
+    return access("INSTALL/APPS/MCA.ELF", F_OK) == 0;
+}
 
 int GetBootDeviceID(void)
 {
@@ -613,6 +679,7 @@ static int CreateBasicFolders(int port, int slot, unsigned int flags)
         "APPS",
         "BOOT",
         "SYS-CONF",
+        "POPSTARTER",
         "\0"};
 
     for (i = 0, result = 0; folders[i][0] != '\0' && result >= 0; i++) {
@@ -623,8 +690,8 @@ static int CreateBasicFolders(int port, int slot, unsigned int flags)
         }
     }
 
-    /* Double OPL / Both: wOPL config lives at MC root (mc?:/wOPL/). */
-    if (result >= 0 && (flags & (INSTALL_MODE_FLAG_OPL_DBL_ONLY | INSTALL_MODE_FLAG_OPL_BOTH_SPLIT))) {
+    /* Double only: wOPL configs on the card. Both puts them on USB instead. */
+    if (result >= 0 && (flags & INSTALL_MODE_FLAG_OPL_DBL_ONLY)) {
         if ((result = mcMkDir(port, slot, "wOPL")) == 0) {
             mcSync(0, NULL, &result);
             if (result == -4)
@@ -872,13 +939,13 @@ static int AddDirContentsToFileCopyList(const char *RootFolderPath, const char *
     return result;
 }
 
-/* Drop the OPL build(s) the user did not choose (standard / double / both-split). */
+/* Drop the OPL ELF the user did not choose. SYS-CONF and POPStarter are never skipped here. */
 static int ShouldSkipOplPath(const char *path, unsigned int flags)
 {
     if (!(flags & (INSTALL_MODE_FLAG_OPL_STD_ONLY | INSTALL_MODE_FLAG_OPL_DBL_ONLY | INSTALL_MODE_FLAG_OPL_BOTH_SPLIT)))
         return 0;
 
-    /* Standard only, or Both (MC+USB): keep standard OPL on target; drop Double OPL. */
+    /* Standard only, or Both: keep standard OPL on target; drop Double OPL ELF (Both copies that ELF to USB later). */
     if (flags & (INSTALL_MODE_FLAG_OPL_STD_ONLY | INSTALL_MODE_FLAG_OPL_BOTH_SPLIT)) {
         if (strstr(path, "OPL-STD") != NULL)
             return 0;
@@ -898,24 +965,6 @@ static int ShouldSkipOplPath(const char *path, unsigned int flags)
     if (strstr(path, "WOPNPS2LD") != NULL)
         return 0;
     if (strstr(path, "OPNPS2LD") != NULL)
-        return 1;
-    return 0;
-}
-
-/* Toolkit-only apps (not in Features): keep off the MC/HDD target, install to USB instead. */
-static int IsToolkitUsbOnlyPath(const char *path)
-{
-    if (path == NULL)
-        return 0;
-    if (strstr(path, "PS2Ident") != NULL)
-        return 1;
-    if (strstr(path, "APOLLO") != NULL)
-        return 1;
-    if (strstr(path, "MCA.ELF") != NULL)
-        return 1;
-    if (strstr(path, "ESR.ELF") != NULL)
-        return 1;
-    if (strstr(path, "SMS.ELF") != NULL)
         return 1;
     return 0;
 }
@@ -994,81 +1043,31 @@ static int CopySrcRelToMassRel(const char *RootFolder, const char *srcRel, const
     return 0;
 }
 
-static int CopyWoplToInstallMedia(const char *RootFolder)
+static int CopyWoplToInstallMedia(const char *RootFolder, unsigned int flags)
 {
-    char probe[300];
-    FILE *f;
-
-    snprintf(probe, sizeof(probe), "%s/APPS/WOPNPS2LD.ELF", RootFolder);
-    if ((f = fopen(probe, "rb")) == NULL)
-        return (-errno) | ERROR_SIDE_SRC;
-    fclose(f);
-
-    return CopySrcRelToMassRel(RootFolder, "APPS/WOPNPS2LD.ELF", "APPS/WOPNPS2LD.ELF");
-}
-
-/* Toolkit extras → USB. MC layout first; HDD layout as fallback. Missing sources skipped. */
-static int CopyToolkitUsbAppsToInstallMedia(const char *RootFolder)
-{
-    static const struct {
-        const char *src;
-        const char *dst;
-    } files[] = {
-        {"APPS/PS2Ident.ELF", "APPS/PS2Ident.ELF"},
-        {"APPS/APOLLO.ELF", "APPS/APOLLO.ELF"},
-        {"APPS/MCA.ELF", "APPS/MCA.ELF"},
-        {"BOOT/ESR.ELF", "BOOT/ESR.ELF"},
-        {"BOOT/SMS.ELF", "BOOT/SMS.ELF"},
-        {"APPS-HDD/PS2Ident.ELF", "APPS/PS2Ident.ELF"},
-        {"APPS-HDD/APOLLO.ELF", "APPS/APOLLO.ELF"},
-        {"APPS-HDD/MCA.ELF", "APPS/MCA.ELF"},
-        {"BOOT-HDD/ESR.ELF", "BOOT/ESR.ELF"},
-        {"BOOT-HDD/SMS.ELF", "BOOT/SMS.ELF"},
+    static const char *cfgFiles[] = {
+        "wOPL/conf_wopl.cfg",
+        "wOPL/conf_game.cfg",
+        "wOPL/conf_network.cfg",
+        "wOPL/icon.sys",
+        "wOPL/copy.icn",
+        "wOPL/del.icn",
+        "wOPL/list.icn",
     };
     unsigned int i;
     int result;
 
-    for (i = 0; i < sizeof(files) / sizeof(files[0]); i++) {
-        result = CopySrcRelToMassRel(RootFolder, files[i].src, files[i].dst);
+    /* USB copies happen only for Both. */
+    if (!(flags & INSTALL_MODE_FLAG_OPL_BOTH_SPLIT))
+        return 0;
+
+    for (i = 0; i < sizeof(cfgFiles) / sizeof(cfgFiles[0]); i++) {
+        result = CopySrcRelToMassRel(RootFolder, cfgFiles[i], cfgFiles[i]);
         if (result < 0)
             return result;
     }
 
-    return 0;
-}
-
-static void PruneToolkitUsbAppsFromCopyList(struct FileCopyTarget **FileCopyList, unsigned int *CurrentNumFiles, unsigned int *CurrentNumDirs, unsigned int *TotalRequiredSpaceForFiles)
-{
-    unsigned int i, write, total;
-    struct FileCopyTarget *list;
-
-    list = *FileCopyList;
-    total = *CurrentNumFiles + *CurrentNumDirs;
-    write = 0;
-
-    for (i = 0; i < total; i++) {
-        const char *check = list[i].source != NULL ? list[i].source : list[i].target;
-
-        if (check != NULL && IsToolkitUsbOnlyPath(check)) {
-            if (!FIO_S_ISDIR(list[i].mode) && list[i].size > 0 && *TotalRequiredSpaceForFiles >= list[i].size)
-                *TotalRequiredSpaceForFiles -= list[i].size;
-            if (FIO_S_ISDIR(list[i].mode)) {
-                if (*CurrentNumDirs > 0)
-                    (*CurrentNumDirs)--;
-            } else {
-                if (*CurrentNumFiles > 0)
-                    (*CurrentNumFiles)--;
-            }
-            if (list[i].source != NULL)
-                free(list[i].source);
-            if (list[i].target != NULL)
-                free(list[i].target);
-            continue;
-        }
-        if (write != i)
-            list[write] = list[i];
-        write++;
-    }
+    return CopySrcRelToMassRel(RootFolder, "APPS/WOPNPS2LD.ELF", "APPS/WOPNPS2LD.ELF");
 }
 
 static void PruneOplFromCopyList(struct FileCopyTarget **FileCopyList, unsigned int *CurrentNumFiles, unsigned int *CurrentNumDirs, unsigned int *TotalRequiredSpaceForFiles, unsigned int flags)
@@ -1460,8 +1459,7 @@ int PerformHDDInstallation(unsigned int flags)
     u32 FreeSectors;
     char RootFolder[256];
 
-    getcwd(RootFolder, sizeof(RootFolder) - 8);
-    strcat(RootFolder, "INSTALL");
+    GetInstallFolderPath(RootFolder, sizeof(RootFolder));
 
     // Generate the file copy list.
     NumFiles = HDD_BASE_INSTALL_NUM_FILES;
@@ -1531,8 +1529,6 @@ int PerformHDDInstallation(unsigned int flags)
         if (result >= 0) {
             if ((result = AddDirContentsToFileCopyList(RootFolder, "BOOT-HDD", "hdd0:__sysconf:pfs:/FMCB", 1, &FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles)) < 0) {
                 DEBUG_PRINTF("AddDirContentsToFileCopyList (BOOT-HDD) failed: %d\n", result);
-            } else {
-                PruneToolkitUsbAppsFromCopyList(&FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles);
             }
         }
 
@@ -1545,7 +1541,6 @@ int PerformHDDInstallation(unsigned int flags)
                 DEBUG_PRINTF("AddDirContentsToFileCopyList (APPS-HDD) failed: %d\n", result);
             } else {
                 PruneOplFromCopyList(&FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles, flags);
-                PruneToolkitUsbAppsFromCopyList(&FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles);
                 // Check if there is anything to copy (copy, only if the APPS-HDD folder exists).
                 if (CurrNumFiles < NumFiles || CurrNumFolders < NumDirectories) {
                     // Calculate available and required space for the APPS partition.
@@ -1608,14 +1603,8 @@ int PerformHDDInstallation(unsigned int flags)
         }
 
         if (result >= 0 && (flags & INSTALL_MODE_FLAG_OPL_BOTH_SPLIT)) {
-            if ((result = CopyWoplToInstallMedia(RootFolder)) < 0) {
+            if ((result = CopyWoplToInstallMedia(RootFolder, flags)) < 0) {
                 DEBUG_PRINTF("CopyWoplToInstallMedia failed: %d\n", result);
-            }
-        }
-
-        if (result >= 0) {
-            if ((result = CopyToolkitUsbAppsToInstallMedia(RootFolder)) < 0) {
-                DEBUG_PRINTF("CopyToolkitUsbAppsToInstallMedia failed: %d\n", result);
             }
         }
 
@@ -1651,8 +1640,7 @@ int PerformInstallation(unsigned char port, unsigned char slot, unsigned int fla
         MGLetter = 'I';
     }
 
-    getcwd(RootFolder, sizeof(RootFolder) - 8);
-    strcat(RootFolder, "INSTALL");
+    GetInstallFolderPath(RootFolder, sizeof(RootFolder));
 
     WaitSema(InstallLockSema);
 
@@ -1935,8 +1923,6 @@ int PerformInstallation(unsigned char port, unsigned char slot, unsigned int fla
         if (result >= 0) {
             if ((result = AddDirContentsToFileCopyList(RootFolder, "BOOT", "BOOT", 1, &FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles)) < 0) {
                 DEBUG_PRINTF("AddDirContentsToFileCopyList (BOOT) failed: %d\n", result);
-            } else {
-                PruneToolkitUsbAppsFromCopyList(&FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles);
             }
         }
 
@@ -1946,12 +1932,18 @@ int PerformInstallation(unsigned char port, unsigned char slot, unsigned int fla
                 DEBUG_PRINTF("AddDirContentsToFileCopyList (APPS) failed: %d\n", result);
             } else {
                 PruneOplFromCopyList(&FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles, flags);
-                PruneToolkitUsbAppsFromCopyList(&FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles);
             }
         }
 
-        /* Double OPL / Both: copy INSTALL/wOPL → mc?:/wOPL/ (configs + icons). */
-        if (result >= 0 && (flags & (INSTALL_MODE_FLAG_OPL_DBL_ONLY | INSTALL_MODE_FLAG_OPL_BOTH_SPLIT))) {
+        /* POPStarter at memory card root (mc?:/POPSTARTER/), not under APPS. */
+        if (result >= 0) {
+            if ((result = AddDirContentsToFileCopyList(RootFolder, "POPSTARTER", "POPSTARTER", 1, &FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles)) < 0) {
+                DEBUG_PRINTF("AddDirContentsToFileCopyList (POPSTARTER) failed: %d\n", result);
+            }
+        }
+
+        /* Double only: wOPL configs on the card. Both sends them to USB. */
+        if (result >= 0 && (flags & INSTALL_MODE_FLAG_OPL_DBL_ONLY)) {
             if ((result = AddDirContentsToFileCopyList(RootFolder, "wOPL", "wOPL", 1, &FileCopyList, &NumFiles, &NumDirectories, &TotalRequiredSpaceForFiles)) < 0) {
                 DEBUG_PRINTF("AddDirContentsToFileCopyList (wOPL) failed: %d\n", result);
             }
@@ -1997,14 +1989,8 @@ int PerformInstallation(unsigned char port, unsigned char slot, unsigned int fla
         }
 
         if (result >= 0 && (flags & INSTALL_MODE_FLAG_OPL_BOTH_SPLIT)) {
-            if ((result = CopyWoplToInstallMedia(RootFolder)) < 0) {
+            if ((result = CopyWoplToInstallMedia(RootFolder, flags)) < 0) {
                 DEBUG_PRINTF("CopyWoplToInstallMedia failed: %d\n", result);
-            }
-        }
-
-        if (result >= 0) {
-            if ((result = CopyToolkitUsbAppsToInstallMedia(RootFolder)) < 0) {
-                DEBUG_PRINTF("CopyToolkitUsbAppsToInstallMedia failed: %d\n", result);
             }
         }
 
