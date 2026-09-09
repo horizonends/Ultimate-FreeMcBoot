@@ -99,10 +99,10 @@ Everything below is **what this fork changes** on top of israpps’ installer.
 | Dual OPL | **Open PS2 Loader** (`OPNPS2LD.ELF`) and **Double OPL** (`WOPNPS2LD.ELF`) as separate menu items |
 | Controller Tester | [ashorizonends Controller Tester](https://github.com/horizonends/controllertester) only (`CONTROLLERTESTER.ELF`); old Pad Test (`PADTEST.ELF`) removed |
 | Cheat Device | NTSC + PAL packages under `APPS/cheats-ntsc/` and `APPS/cheats-pal/` |
-| wOPL | Non-beta Double OPL build from [wOPL releases](https://github.com/ps2homebrew/wOPL/releases) |
+| wOPL | **Double OPL v1.1** (stable, non-beta) from [wOPL releases](https://github.com/ps2homebrew/wOPL/releases); configs in `mc?:/wOPL/` |
 | File Manager | [wLaunchELF_R3Z](https://github.com/saildot4k/wLaunchELF_R3Z) v4.76 replaces uLaunchELF as `BOOT.ELF` (OSD **File Manager**) |
 | Features menu | Player-focused: OPL / wOPL / Cheats / Controller Tester / **POPStarter** / Launch Disc / File Manager (**ESR** & **SMS** moved to Toolkit) |
-| USB drivers (MC) | Default `INSTALL/SYS-CONF` ships **stock** `USBD.IRX` / `USBHDFSD.IRX` (avoids FMCB logo hang). **EXFAT** copies stay under `FMCB_EXFAT/` and `READY_TO_USE/`; optional after install. POPStarter keeps EXFAT IRXes under `APPS/POPSTARTER/` |
+| USB drivers (MC) | Default `INSTALL/SYS-CONF` ships **stock** `USBD.IRX` / `USBHDFSD.IRX` (avoids FMCB logo hang). **EXFAT** copies stay under `FMCB_EXFAT/` and `READY_TO_USE/`; optional after install. POPStarter installs to **`mc?:/POPSTARTER/`** (root) with its EXFAT IRXes |
 
 ### What we did **not** rewrite
 
@@ -118,7 +118,7 @@ The **default install** copies **stock** (FAT) `USBD.IRX` / `USBHDFSD.IRX` into 
 **EXFAT** drivers remain available for USB sticks/apps that need them:
 - `FMCB_EXFAT/SYS-CONF/` in the package (manual copy / EXFAT path instructions)
 - `installer_res/READY_TO_USE/FreeMcBoot/SYS-CONF/`
-- POPStarter companions under `INSTALL/APPS/POPSTARTER/` (`usbd.irx` / `usbhdfsd.irx`)
+- POPStarter under `INSTALL/POPSTARTER/` → **`mc?:/POPSTARTER/`** (`POPSTARTER.ELF`, `usbd.irx` / `usbhdfsd.irx`)
 
 The **EXFAT installer ELF** (`ashorizonends_Installer_EXFAT.elf`) only affects reading the *installer media*; it does not require EXFAT IRXes on the memory card.
 
@@ -129,9 +129,9 @@ After `make rebuild` in `installer/`:
 
 | File | Use |
 |------|-----|
-| `installer_res/ashorizonends_Installer_EXFAT.elf` | **Preferred** from exFAT / modern USB |
-| `installer_res/ashorizonends_Installer.elf` | Non-EXFAT USB |
-| `FMCBInstaller*.elf` | Same builds under the classic filenames |
+| `installer_res/ashorizonends_Installer_EXFAT.elf` | **Preferred** from exFAT / modern USB (shipped in UFMCB zips) |
+| `installer_res/ashorizonends_Installer.elf` | FAT32 USB fallback |
+| `installer_res/FMCBInstaller*.elf` | Build artifacts only — not shipped in UFMCB packages |
 
 Run the ELF from the folder that also contains `INSTALL/` and `lang/` (same layout as upstream packages).
 

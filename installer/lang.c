@@ -71,7 +71,7 @@ static const char *DefaultLanguageStringTable[SYS_UI_MSG_COUNT] = {
     "The installer has detected that your console is a very rare unit\nIf you want to colaborate with the homebrew PS2 comunity please contact me: \n\nhttps://github.com/israpps",
     "Select the target memory card slot.",
     "Format the memory card before installing?\n\nWarning: all data on the card will be erased.",
-    "Which Open PS2 Loader should be installed?\n\nStandard or Double: on the memory card.\nBoth: Standard on card, Double OPL on USB."};
+    "Which Open PS2 Loader should be installed?\n\nStandard or Double: ELF and configs on the memory card. Nothing copied to USB.\nBoth: Standard on card, Double ELF and wOPL configs on USB to save space.\nSYS-CONF and POPStarter (mc:/POPSTARTER) stay on the card."};
 
 static const char *DefaultLanguageLabelStringTable[SYS_UI_LBL_COUNT] = {
     "OK",

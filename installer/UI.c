@@ -624,10 +624,10 @@ static struct UIMenuItem MessageBoxItems[] = {
     {MITEM_BUTTON, MBOX_SCREEN_ID_BTN1, MITEM_FLAG_POS_MID, 0, 16},
     {MITEM_BREAK},
     {MITEM_BREAK},
-    {MITEM_BUTTON, MBOX_SCREEN_ID_BTN3, MITEM_FLAG_POS_MID, 0, 16},
-    {MITEM_BREAK},
-    {MITEM_BREAK},
     {MITEM_BUTTON, MBOX_SCREEN_ID_BTN2, MITEM_FLAG_POS_MID, 0, 16},
+    {MITEM_BREAK},
+    {MITEM_BREAK},
+    {MITEM_BUTTON, MBOX_SCREEN_ID_BTN3, MITEM_FLAG_POS_MID, 0, 16},
     {MITEM_BREAK},
     {MITEM_BREAK},
     {MITEM_BUTTON, MBOX_SCREEN_ID_BTN4, MITEM_FLAG_POS_MID, 0, 16},
@@ -664,7 +664,13 @@ int ShowMessageBox(int Option1Label, int Option2Label, int Option3Label, int Opt
 
     if (numButtons > 0) {
         MessageBoxMenu.hints[0].button = BUTTON_TYPE_SYS_SELECT;
-        MessageBoxMenu.hints[1].button = (numButtons == 1) ? -1 : BUTTON_TYPE_SYS_CANCEL;
+        if (numButtons == 1) {
+            MessageBoxMenu.hints[1].button = -1;
+        } else {
+            MessageBoxMenu.hints[1].button = BUTTON_TYPE_SYS_CANCEL;
+            /* Multi-choice dialogs: Circle goes back to the previous step, not "cancel install". */
+            MessageBoxMenu.hints[1].label = (numButtons >= 3) ? SYS_UI_LBL_BACK : SYS_UI_LBL_CANCEL;
+        }
 
         switch (UIExecMenu(&MessageBoxMenu, 0, NULL, NULL)) {
             case MBOX_SCREEN_ID_BTN1:
@@ -1204,6 +1210,40 @@ static short int UIGetPrevSelectableItem(struct UIMenu *menu, short int index)
     return result;
 }
 
+static short int UIGetNextButtonItem(struct UIMenu *menu, short int index)
+{
+    short int result;
+    int i;
+
+    index = (index < 0) ? 0 : index + 1;
+    result = -1;
+    for (i = index; menu->items[i].type != MITEM_TERMINATOR; i++) {
+        if (menu->items[i].type == MITEM_BUTTON && !(menu->items[i].flags & MITEM_FLAG_DISABLED) && !(menu->items[i].flags & MITEM_FLAG_HIDDEN)) {
+            result = i;
+            break;
+        }
+    }
+
+    return result;
+}
+
+static short int UIGetPrevButtonItem(struct UIMenu *menu, short int index)
+{
+    short int result;
+    int i;
+
+    index = (index < 0) ? 0 : index - 1;
+    result = -1;
+    for (i = index; i >= 0; i--) {
+        if (menu->items[i].type == MITEM_BUTTON && !(menu->items[i].flags & MITEM_FLAG_DISABLED) && !(menu->items[i].flags & MITEM_FLAG_HIDDEN)) {
+            result = i;
+            break;
+        }
+    }
+
+    return result;
+}
+
 int UIExecMenu(struct UIMenu *FirstMenu, short int SelectedItem, struct UIMenu **CurrentMenu, int (*callback)(struct UIMenu *menu, unsigned short int frame, int selection, u32 padstatus))
 {
     struct UIMenu *menu;
@@ -1279,7 +1319,12 @@ int UIExecMenu(struct UIMenu *FirstMenu, short int SelectedItem, struct UIMenu *
                 item = &menu->items[selection];
             }
         } else if (PadRepeatStatus & PAD_LEFT) {
-            if (item != NULL && !(item->flags & MITEM_FLAG_READONLY) && !(item->flags & MITEM_FLAG_DISABLED)) {
+            if (item != NULL && item->type == MITEM_BUTTON) {
+                if ((NextSel = UIGetPrevButtonItem(menu, selection)) >= 0) {
+                    selection = NextSel;
+                    item = &menu->items[selection];
+                }
+            } else if (item != NULL && !(item->flags & MITEM_FLAG_READONLY) && !(item->flags & MITEM_FLAG_DISABLED)) {
                 switch (item->type) {
                     case MITEM_VALUE:
                         if (item->value.value - 1 >= item->value.min)
@@ -1299,7 +1344,12 @@ int UIExecMenu(struct UIMenu *FirstMenu, short int SelectedItem, struct UIMenu *
                 }
             }
         } else if (PadRepeatStatus & PAD_RIGHT) {
-            if (item != NULL && !(item->flags & MITEM_FLAG_READONLY) && !(item->flags & MITEM_FLAG_DISABLED)) {
+            if (item != NULL && item->type == MITEM_BUTTON) {
+                if ((NextSel = UIGetNextButtonItem(menu, selection)) >= 0) {
+                    selection = NextSel;
+                    item = &menu->items[selection];
+                }
+            } else if (item != NULL && !(item->flags & MITEM_FLAG_READONLY) && !(item->flags & MITEM_FLAG_DISABLED)) {
                 switch (item->type) {
                     case MITEM_VALUE:
                         if (item->value.value + 1 <= item->value.max)

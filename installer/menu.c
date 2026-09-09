@@ -238,6 +238,29 @@ static unsigned char ProcessSpaceValue(unsigned long int space, unsigned int *Pr
     return (SYS_UI_LBL_B + unit);
 }
 
+static int PromptOplInstallChoice(unsigned int *flags)
+{
+    char msg[640];
+    const char *base = GetUIString(SYS_UI_MSG_OPL_CHOICE);
+    int result;
+
+    if (IsToolkitInstallPackage())
+        snprintf(msg, sizeof(msg), "%s\n\nUFMCB Toolkit (~10 MB on card). Use a 16 MB+ card.", base);
+    else
+        snprintf(msg, sizeof(msg), "%s\n\nUFMCB Features (~7 MB on card).", base);
+
+    result = ShowMessageBox(SYS_UI_LBL_OPL_STD, SYS_UI_LBL_OPL_DBL, SYS_UI_LBL_OPL_BOTH, -1, msg, SYS_UI_LBL_CONFIRM);
+    if (result == 0)
+        return 0;
+    if (result == 1)
+        *flags |= INSTALL_MODE_FLAG_OPL_STD_ONLY;
+    else if (result == 2)
+        *flags |= INSTALL_MODE_FLAG_OPL_DBL_ONLY;
+    else if (result == 3)
+        *flags |= INSTALL_MODE_FLAG_OPL_BOTH_SPLIT;
+    return 1;
+}
+
 static void DrawMenuEntranceSlideInMenuAnimation(int SelectedOption)
 {
     int i;
@@ -407,15 +430,20 @@ void MainMenu(void)
     done = 0;
     memset(McData, 0, sizeof(McData));
 
+    static char versionLabel[48];
+
     if (IsUnsupportedModel())
         DisplayWarningMessage(SYS_UI_MSG_ROM_UNSUPPORTED);
     if (GetPs2Type() == PS2_SYSTEM_TYPE_PS2) {
         if (IsRareModel())
             DisplayWarningMessage(SYS_UI_MSG_RARE_ROMVER);
     }
-    UISetString(&InstallMainMenu, MAIN_MENU_ID_VERSION, FMCB_INSTALLER_VERSION);
-    UISetString(&ExtraMenu, MAIN_MENU_ID_VERSION, FMCB_INSTALLER_VERSION);
-    UISetString(&MCMenu, MAIN_MENU_ID_VERSION, FMCB_INSTALLER_VERSION);
+    snprintf(versionLabel, sizeof(versionLabel), "%s %s",
+             IsToolkitInstallPackage() ? "UFMCB Toolkit" : "UFMCB Features",
+             FMCB_INSTALLER_VERSION);
+    UISetString(&InstallMainMenu, MAIN_MENU_ID_VERSION, versionLabel);
+    UISetString(&ExtraMenu, MAIN_MENU_ID_VERSION, versionLabel);
+    UISetString(&MCMenu, MAIN_MENU_ID_VERSION, versionLabel);
 #ifdef ALLOW_MI
     UISetEnabled(&InstallMainMenu, MAIN_MENU_ID_BTN_MI, GetPs2Type() == PS2_SYSTEM_TYPE_PS2);
 #else
@@ -515,16 +543,9 @@ void MainMenu(void)
                     }
                 }
 
-                /* Standard OPL / Double OPL on MC; Both = Standard on MC + Double on USB. */
-                result = ShowMessageBox(SYS_UI_LBL_OPL_STD, SYS_UI_LBL_OPL_DBL, SYS_UI_LBL_OPL_BOTH, -1, GetUIString(SYS_UI_MSG_OPL_CHOICE), SYS_UI_LBL_CONFIRM);
-                if (result == 0)
+                /* Standard or Double: everything on MC. Both: Double ELF + wOPL configs on USB. */
+                if (!PromptOplInstallChoice(&flags))
                     break;
-                if (result == 1)
-                    flags |= INSTALL_MODE_FLAG_OPL_STD_ONLY;
-                else if (result == 2)
-                    flags |= INSTALL_MODE_FLAG_OPL_DBL_ONLY;
-                else if (result == 3)
-                    flags |= INSTALL_MODE_FLAG_OPL_BOTH_SPLIT;
 
                 if (CheckPrerequisites(&McData[McPort], event) < 0)
                     break;
@@ -550,28 +571,36 @@ void MainMenu(void)
                 }
 
                 if (result < 0) {
-                    switch (-result) {
-                        case ENOENT:
-                            DisplayErrorMessage(SYS_UI_MSG_NO_ENT_ERROR);
-                            break;
-                        case (EIO | ERROR_SIDE_SRC):
-                            DisplayErrorMessage(SYS_UI_MSG_READ_INST_ERROR);
-                            break;
-                        case (EIO | ERROR_SIDE_DST):
-                            DisplayErrorMessage(SYS_UI_MSG_WRITE_INST_ERROR);
-                            break;
-                        case ENOMEM:
-                            DisplayErrorMessage(SYS_UI_MSG_NO_MEM_ERROR);
-                            break;
-                        case EEXTCACHEINITERR:
-                            DisplayErrorMessage(SYS_UI_MSG_CACHE_INIT_ERROR);
-                            break;
-                        case EEXTCRSLNKFAIL:
-                            DisplayErrorMessage(SYS_UI_MSG_CROSSLINK_FAIL);
-                            break;
-                        case EEXTMGSIGNERR:
-                            DisplayErrorMessage(SYS_UI_MSG_MG_BIND_FAIL);
-                            break;
+                    unsigned int err = (unsigned int)(-result);
+
+                    if (err == (unsigned int)ENOSPC) {
+                        /* Out-of-space dialog already shown. */
+                    } else if ((err & ERROR_SIDE_SRC) && ((err & 0xFF) == (unsigned int)ENOENT)) {
+                        DisplayErrorMessage(SYS_UI_MSG_NO_ENT_ERROR);
+                    } else {
+                        switch (err & 0x3FFF) {
+                            case ENOENT:
+                                DisplayErrorMessage(SYS_UI_MSG_NO_ENT_ERROR);
+                                break;
+                            case (EIO | ERROR_SIDE_SRC):
+                                DisplayErrorMessage(SYS_UI_MSG_READ_INST_ERROR);
+                                break;
+                            case (EIO | ERROR_SIDE_DST):
+                                DisplayErrorMessage(SYS_UI_MSG_WRITE_INST_ERROR);
+                                break;
+                            case ENOMEM:
+                                DisplayErrorMessage(SYS_UI_MSG_NO_MEM_ERROR);
+                                break;
+                            case EEXTCACHEINITERR:
+                                DisplayErrorMessage(SYS_UI_MSG_CACHE_INIT_ERROR);
+                                break;
+                            case EEXTCRSLNKFAIL:
+                                DisplayErrorMessage(SYS_UI_MSG_CROSSLINK_FAIL);
+                                break;
+                            case EEXTMGSIGNERR:
+                                DisplayErrorMessage(SYS_UI_MSG_MG_BIND_FAIL);
+                                break;
+                        }
                     }
 
                     DisplayErrorMessage(SYS_UI_MSG_INSTALL_FAILED);
@@ -714,16 +743,9 @@ void MainMenu(void)
                     break;
                 flags = 0;
 
-                /* Standard OPL / Double OPL on HDD; Both = Standard on HDD + Double on USB. */
-                result = ShowMessageBox(SYS_UI_LBL_OPL_STD, SYS_UI_LBL_OPL_DBL, SYS_UI_LBL_OPL_BOTH, -1, GetUIString(SYS_UI_MSG_OPL_CHOICE), SYS_UI_LBL_CONFIRM);
-                if (result == 0)
+                /* Standard or Double: everything on HDD. Both: Double ELF + wOPL configs on USB. */
+                if (!PromptOplInstallChoice(&flags))
                     break;
-                if (result == 1)
-                    flags |= INSTALL_MODE_FLAG_OPL_STD_ONLY;
-                else if (result == 2)
-                    flags |= INSTALL_MODE_FLAG_OPL_DBL_ONLY;
-                else if (result == 3)
-                    flags |= INSTALL_MODE_FLAG_OPL_BOTH_SPLIT;
 
                 if (HasOldFMCBConfigFileOnHDD()) {
                     result = DisplayPromptMessage(SYS_UI_MSG_CNF_HDD_FOUND, SYS_UI_LBL_YES, SYS_UI_LBL_NO);

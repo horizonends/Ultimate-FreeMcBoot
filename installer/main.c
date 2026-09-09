@@ -66,6 +66,8 @@ int main(int argc, char *argv[])
         sio_printf("\targv[%d] = %s\n", argc, argv[result]);
 
     // chdir("mass:/FMCBInstaller/");
+    InitInstallerMediaPath(argc, argv);
+
     if ((BootDevice = GetBootDeviceID()) == BOOT_DEVICE_UNKNOWN)
     {
         GS_BGCOLOUR(0x0000FF);
